@@ -78,7 +78,6 @@ while i < maxlen:
 
 trans = map(lambda x: (x[0], x[1].strip("\n")), a)
 
-nl = 0
 for i in trans:
 	
 	if i[0] not in active:
@@ -194,9 +193,8 @@ for i in trans:
 					wr = " "+w+" "+str(disc[w])
 				fout.write(wr)
 				sp = sp + 1
-			if nl != len(trans)-1:
-				fout.write("\n")
-	nl = nl + 1
+			
+			fout.write("\n")
 fout.close()
 # file = open("2018201005_1.txt", "r")
 # lines = file.readlines()
