@@ -1,10 +1,10 @@
 import sys
 import copy
 disc = {}
-m = {}
+mainmemory = {}
 a = []
 varx={}
-local1 = {}
+local = {}
 active = []
 i = 0
 fname = sys.argv[1]
@@ -24,7 +24,7 @@ with open(fname,'r') as f:
 			i = 0
 			while i < len(var):
 				disc[var[i]]=int(var[i+1])
-				m[var[i]]=int(var[i+1])
+				mainmemory[var[i]]=int(var[i+1])
 				i=i+2
 		else:
 			if flag == 1:
@@ -49,7 +49,7 @@ with open(fname,'r') as f:
 # print("DDDDDDDDDDDDDDDDDDDD")
 # print(disc)
 # print("MMMMMMMMMMMMMMMMMMMM")
-# print(m)
+# print(mainmemory)
 # print("TTTTTTTTTTTTTTTTTTTTTTT")
 # print(transactions)
 
@@ -86,15 +86,15 @@ for i in trans:
 		wr = '<START '+ mapping[i[0]]+'>'
 		fout.write(wr)
 		fout.write("\n")
-		kk = m.keys()
+		kk = mainmemory.keys()
 		kk.sort()
 		sp = 0
 		for w in kk:
 			if w in mz:
 				if sp == 0:
-					wr = w+" "+str(m[w])
+					wr = w+" "+str(mainmemory[w])
 				else:
-					wr = " "+w+" "+str(m[w])
+					wr = " "+w+" "+str(mainmemory[w])
 				sp = sp + 1
 				fout.write(wr)
 		fout.write("\n")
@@ -116,14 +116,14 @@ for i in trans:
 		
 		temp = e.split(':=')
 		temp = map(lambda x: x.strip(), temp)
-		m1=copy.deepcopy(m)
-		local1[temp[0]] = eval(temp[1], m1, local1)
+		m1=copy.deepcopy(mainmemory)
+		local[temp[0]] = eval(temp[1], m1, local)
 
 	if 'READ' in e:
 		
 		temp = e.split('(')[1].split(')')[0].split(',')
 		temp = map(lambda x: x.strip(), temp)
-		local1[temp[1]] = m[temp[0]]
+		local[temp[1]] = mainmemory[temp[0]]
 		if temp[0] not in varx[i[0]]:
 			mz.append(temp[0])
 			varx[i[0]].append(temp[0])
@@ -133,19 +133,19 @@ for i in trans:
 		temp = e.split('(')[1].split(')')[0].split(',')
 		temp = map(lambda x: x.strip(), temp)
 
-		wr = '<'+mapping[i[0]]+', '+temp[0]+', '+str(m[temp[0]])+'>'
+		wr = '<'+mapping[i[0]]+', '+temp[0]+', '+str(mainmemory[temp[0]])+'>'
 		fout.write(wr)
 		fout.write("\n")
-		m[temp[0]] = local1[temp[1]]
-		kk = m.keys()
+		mainmemory[temp[0]] = local[temp[1]]
+		kk = mainmemory.keys()
 		kk.sort()
 		sp = 0
 		for w in kk:
 			if w in mz:
 				if sp == 0:
-					wr = w+" "+str(m[w])
+					wr = w+" "+str(mainmemory[w])
 				else:
-					wr = " "+w+" "+str(m[w])
+					wr = " "+w+" "+str(mainmemory[w])
 				sp = sp + 1
 				fout.write(wr)
 		fout.write("\n")
@@ -164,22 +164,22 @@ for i in trans:
 	if 'OUTPUT' in e:
 		
 		temp = e.split('(')[1].split(')')[0]
-		disc[temp] = m[temp]
+		disc[temp] = mainmemory[temp]
 		l = varx[i[0]]
 		l.remove(temp)
 		if len(l) == 0:
 			wr = '<COMMIT '+ mapping[i[0]]+'>'
 			fout.write(wr)
 			fout.write("\n")
-			kk = m.keys()
+			kk = mainmemory.keys()
 			kk.sort()
 			sp = 0
 			for w in kk:
 				if w in mz:
 					if sp == 0:
-						wr=w+" "+str(m[w])
+						wr=w+" "+str(mainmemory[w])
 					else:
-						wr=" "+w+" "+str(m[w])
+						wr=" "+w+" "+str(mainmemory[w])
 					fout.write(wr)
 					sp = sp + 1
 
